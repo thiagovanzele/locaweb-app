@@ -22,12 +22,13 @@ public class Product {
     private Double value;
 
     @Enumerated(EnumType.STRING)
-    private ProductType type;
+    private ProductType name;
 
-    public Product(ProductType type) {
-        this.type = type;
-        this.value = type.getPrice();
+    public Product(String type) {
+        this.name = ProductType.valueOf(type);
+        this.value = ProductType.valueOf(type).getPrice();
     }
+
 
 
 }
