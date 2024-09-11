@@ -3,8 +3,7 @@ package br.com.localweb.app.controllers;
 import br.com.localweb.app.domain.client.Client;
 import br.com.localweb.app.dtos.ClientDTO;
 import br.com.localweb.app.services.ClientService;
-import br.com.localweb.app.util.ReflectionService;
-import jakarta.websocket.ClientEndpoint;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,8 +24,8 @@ public class ClientController {
 
 
     @PostMapping
-    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO data) {
-        Client client = clientService.insert(data);
+    public ResponseEntity<ClientDTO> insert(@RequestBody @Valid ClientDTO data) {
+        Client client = clientService.insert(data, data.adress().getZipCode(), data.adress().getNumber());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(client.getId()).toUri();
@@ -37,7 +34,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> findById(@PathVariable UUID id) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public ResponseEntity<ClientDTO> findById(@PathVariable UUID id) {
         ClientDTO clientDTO = clientService.findById(id);
         return ResponseEntity.ok(clientDTO);
     }
@@ -55,7 +52,7 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDTO> update(@PathVariable UUID id, @RequestBody ClientDTO data) {
+    public ResponseEntity<ClientDTO> update(@PathVariable UUID id, @RequestBody @Valid ClientDTO data) {
         ClientDTO clientDTO = clientService.update(id, data);
         return ResponseEntity.ok(clientDTO);
     }
