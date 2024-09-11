@@ -1,4 +1,4 @@
-package br.com.localweb.app.domain.adress;
+package br.com.localweb.app.domain.address;
 
 import br.com.localweb.app.dtos.AdressDTO;
 import jakarta.persistence.Embeddable;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Adress {
+public class Address {
 
     private String zipCode;
     private String street;
@@ -21,7 +21,7 @@ public class Adress {
     private String state;
     private String number;
 
-    public Adress(AdressDTO data) {
+    public Address(AdressDTO data) {
         this.street = data.street();
         this.city = data.city();
         this.neighborhood = data.neighborhood();

@@ -1,14 +1,14 @@
 package br.com.localweb.app.domain.client;
 
-import br.com.localweb.app.domain.invoice.Invoice;
+import br.com.localweb.app.domain.address.Address;
 import br.com.localweb.app.domain.order.Order;
 import br.com.localweb.app.dtos.ClientDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
-import javax.annotation.processing.Generated;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,6 +20,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
 public class Client {
 
     @Id
@@ -34,8 +35,12 @@ public class Client {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Order> orders = new ArrayList<>();
 
+    @Embedded
+    private Address address;
+
     public Client(ClientDTO data) {
         this.document = data.document();
         this.name = data.name();
+        this.address = data.adress();
     }
 }
