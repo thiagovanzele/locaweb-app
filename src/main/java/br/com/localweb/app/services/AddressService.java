@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class AdressService {
+public class AddressService {
 
-    public Address findAdress(String zipCode, String number) {
+    public Address findAddress(String zipCode, String number) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "https://viacep.com.br/ws/" + zipCode + "/json/";
 
