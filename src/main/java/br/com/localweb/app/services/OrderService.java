@@ -11,6 +11,7 @@ import br.com.localweb.app.repositories.ClientRepository;
 import br.com.localweb.app.repositories.OrderItemRepository;
 import br.com.localweb.app.repositories.OrderRepository;
 import br.com.localweb.app.repositories.ProductRepository;
+import br.com.localweb.app.services.validators.ValidateOrderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,6 +37,12 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private InvoiceService invoiceService;
+
+    @Autowired
+    List<ValidateOrderInterface> validators;
+
     public Page<OrderDTO> findAll(Pageable pageable) {
         return orderRepository.findAll(pageable).map(OrderDTO::new);
     }
@@ -46,17 +53,19 @@ public class OrderService {
     }
 
     public OrderDTO insert(OrderRequestDTO data) {
+        validators.forEach(validator -> validator.validateOrder(data));
         Client client = clientRepository.findById(data.clientID()).orElseThrow(() -> new ResourceNotFoundException(Client.class, data.clientID()));
+        Order order = new Order(client, new ArrayList<>());
+
         List<OrderItem> orderItems = data.orderItems().stream().map(orderItem -> {
             Product product = productRepository.findByName(orderItem.productType());
             if (product == null) {
                 throw new RuntimeException("Product not found: " + orderItem.productType());
             }
-            return new OrderItem(product, orderItem);
+            return new OrderItem(order, product, orderItem.quantity());
         }).collect(Collectors.toList());
 
 
-        Order order = new Order(client, new ArrayList<>());
         orderRepository.save(order);
 
         orderItems.forEach(orderItem -> {
@@ -68,10 +77,10 @@ public class OrderService {
         order.setTotal();
         orderRepository.save(order);
 
+        invoiceService.insert(order);
+
         return new OrderDTO(order);
     }
-
-
 
 
 }
