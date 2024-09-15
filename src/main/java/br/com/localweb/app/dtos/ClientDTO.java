@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.util.UUID;
 
-public record ClientDTO(UUID id, @NotBlank(message = "Name must not be null.") String name, @NotBlank(message = "Document must not be null.") String document, Address adress) {
+public record ClientDTO(UUID id, @NotBlank(message = "Name must not be null.") String name, @NotBlank(message = "Document must not be null.") String document, Address address, Boolean isActive) {
 
     public ClientDTO (Client client) {
-        this(client.getId(), client.getName(), client.getDocument(), client.getAddress());
+        this(client.getId(), client.getName(), client.getDocument(), client.getAddress(), client.getActive());
     }
 
 }
