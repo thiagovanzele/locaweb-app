@@ -2,13 +2,11 @@ package br.com.localweb.app.domain.invoice;
 
 import br.com.localweb.app.domain.client.Client;
 import br.com.localweb.app.domain.order.Order;
-import br.com.localweb.app.domain.product.Product;
+import br.com.localweb.app.domain.orderItem.OrderItem;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,14 +25,6 @@ public class Invoice {
     @ManyToOne
     private Client client;
 
-    @ManyToMany
-    @JoinTable(
-            name = "tb_invoice_product",
-            joinColumns = @JoinColumn(name = "invoice_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    private List<Product> products = new ArrayList<>();
-
     private LocalDateTime issueDate;
 
     private Double tax;
@@ -45,9 +35,21 @@ public class Invoice {
     private Order order;
 
     public void calculateInvoiceAmount() {
-        this.grossValue = products.stream()
-                .mapToDouble(Product::getValue)
-                .sum();
+        this.grossValue = order.getTotal() + calculateTax();
+    }
+
+    public Double calculateTax() {
+        double tax = 0;
+        for (OrderItem item : order.getOrderItems()) {
+            tax += item.getSubTotal() * 0.1;
+        }
+
+        this.tax = tax;
+        return tax;
+    }
+
+    public Double getIssueTotal() {
+        return grossValue;
     }
 
 
