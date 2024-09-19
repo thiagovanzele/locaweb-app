@@ -28,7 +28,7 @@ public class Client {
     private UUID id;
     private String name;
     private String document;
-    private Boolean isActive;
+    private Boolean active;
 
     @JsonIgnore
     @OneToMany(mappedBy = "client")
@@ -41,6 +41,6 @@ public class Client {
     public Client(ClientDTO data) {
         this.document = data.document();
         this.name = data.name();
-        this.address = data.adress();
+        this.address = data.address();
     }
 }
