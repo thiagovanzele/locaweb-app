@@ -13,6 +13,7 @@ import lombok.Setter;
 import java.io.Serializable;
 import java.util.Objects;
 
+
 @Getter
 @Setter
 @Embeddable
@@ -33,8 +34,7 @@ public class OrderItemPK implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OrderItemPK that = (OrderItemPK) o;
-        return Objects.equals(order, that.order) &&
-                Objects.equals(product, that.product);
+        return Objects.equals(order, that.order) && Objects.equals(product, that.product);
     }
 
     @Override
