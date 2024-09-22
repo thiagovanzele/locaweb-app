@@ -29,10 +29,10 @@ public class Order {
     private Client client;
 
     @JsonIgnore
-    @OneToOne
+    @OneToOne(mappedBy = "order")
     private Invoice invoice;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "id.order")
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private Double total;
