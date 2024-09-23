@@ -25,7 +25,7 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ClientDTO> insert(@RequestBody @Valid ClientDTO data) {
-        Client client = clientService.insert(data, data.adress().getZipCode(), data.adress().getNumber());
+        Client client = clientService.insert(data, data.address().getZipCode(), data.address().getNumber());
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(client.getId()).toUri();
