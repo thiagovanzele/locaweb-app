@@ -1,6 +1,7 @@
 package br.com.localweb.app.controllers.exceptions;
 
 import br.com.localweb.app.exceptions.ResourceNotFoundException;
+import br.com.localweb.app.exceptions.ValidationException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -31,6 +32,24 @@ public class ControllerExceptionHandler {
         err.setStatus(statusCode.value());
 
         return ResponseEntity.status(statusCode).body(err);
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<StandardError> validationException(ValidationException e, HttpServletRequest http) {
+        StandardError err = new StandardError();
+
+        String message = e.getMessage();
+        String error = "Error in validation";
+        HttpStatus statusCode = HttpStatus.BAD_REQUEST;
+
+        err.setError(error);
+        err.setMessage(message);
+        err.setTimestamp(LocalDateTime.now());
+        err.setPath(http.getRequestURI());
+        err.setStatus(statusCode.value());
+
+        return ResponseEntity.status(statusCode).body(err);
+
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
